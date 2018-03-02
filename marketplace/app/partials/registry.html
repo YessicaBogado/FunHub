@@ -1,0 +1,103 @@
+
+<!-- Search Bar -->
+<div class="container">
+    <div class="sectionOne">
+        <section>
+            <div class="col-lg-6">
+                <form class="form-horizontal">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="icon-search"><i class="glyphicon glyphicon-search"></i></span>
+                        <input type="text" class="form-control" ng-model="query" placeholder="Search for..." aria-describedby="icon-search">
+                        <div class="input-group-btn">
+                            <button onclick="filter()" type="button" class="btn btn-default">Advanced Search</button>
+                        </div>
+                    </div>
+                </form><br>
+            </div>
+        </section>
+        <section>
+            <div id="filter" class="row search-hide">
+                <form>
+                	<div class="form-group col-sm-3 col-xs-6">
+                		<select ng-model="language" class="filter-language filter form-control">
+                			<option value="" disabled selected>Language</option>
+                			<option value="">Python</option>
+                            <option value="">JavaScript</option>
+                            <option value="">C</option>
+                            <option value="">C++</option>
+                		</select>
+                	</div>
+                	<div class="form-group col-sm-3 col-xs-6">
+                		<select ng-model="ranking" class="filter-ranking filter form-control">
+                			<option value="" disabled selected>Ranking</option>
+                			<option value="">1</option>
+                            <option value="">2</option>
+                            <option value="">3</option>
+                            <option value="">4</option>
+                            <option value="">5</option>
+                		</select>
+                	</div>
+                	<div class="form-group col-sm-3 col-xs-6">
+                		<select ng-model="access" class="filter-access filter form-control">
+                			<option value="" disabled selected>Access</option>
+                			<option value="">Public</option>
+                            <option value="">Private</option>
+                		</select>
+                	</div>
+                	<div class="form-group col-sm-3 col-xs-6">
+                		<select ng-model="type" class="filter-type filter form-control">
+                			<option value="" disabled selected>Type</option>
+                			<option value="">Recursive</option>
+                            <option value="">Another</option>
+                		</select>
+                	</div>
+                </form>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+    function filter() {
+        var x = document.getElementById("filter");
+        if (x.className.indexOf("search-show") == -1) {
+            x.className += " search-show";
+        } else {
+            x.className = x.className.replace(" search-show", "");
+        }
+    }
+</script>
+
+<div class="container">
+
+    <header><h1>Top Picks</h1></header>
+    <div masonry preserve-order id="function_list">
+        <div class="grid-sizer col-xs-6 col-sm-4 col-lg-3"></div>
+        <div class="masonry-brick sensor-wrapper col-xs-6 col-sm-4 col-lg-3" id="{{sensor.id}}"
+             ng-repeat="sensor in sensors | filter:{title: query}">
+            <div class="sensor" ng-controller="FunctionModalCtrl">
+                <span class="glyphicon glyphicon-star pull-right" style="color:#f2be54"></span>
+                <div class="icon" ng-click="open()">
+                    <img width="60px" class="img-responsive pull-left sensor-icon" ng-src="{{sensor.icon}}">
+                    <h4>{{sensor.title}}</h4>
+                    <abbr title="High Secure"><span class="glyphicon glyphicon-lock" style="color:#f2be54" ng-show="sensor.end_points.length > 1"></span></abbr>
+                    <span class="label label-success" ng-show="user.check_subscribe(sensor.id)">Subscribed</span>
+                    <abbr title="High Reliable"><span class="label label-info" ng-show="sensor.end_points.length > 2">Reliable</span></abbr>
+                </div>
+
+                <div ng-show="sensor.picture" ng-click="open()">
+                    <img class="img-responsive sensor-picture" ng-src="{{sensor.picture}}">
+                </div>
+
+                <span class="description" ng-click="open()">{{sensor.description}}</span>
+
+                <div ng-controller="ShowMoreCtrl" ng-show="sensor.comments">
+                    <a href ng-click="toggleCollapse()"><strong>More...</strong></a>
+                        <span ng-hide="isCollapsed">You can rate and discuss your experience by using following link
+                        <a href ng-href="{{sensor.comments}}">{{sensor.comments}}</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

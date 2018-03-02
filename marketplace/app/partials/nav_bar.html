@@ -1,0 +1,53 @@
+
+<!-- Navigation pills -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <header class="header-tp">
+                <nav class="navbar navbar-inverse navbar-fixed-top">
+                    <div class="container-fluid">
+                        <form class="form-inline">
+
+                            <!-- Left -->
+                            <ul class="nav navbar-nav navbar-left navbar-collapse collapse">
+                                <!-- Always show -->
+                                <li ng-class="{active: isActive('/registry')}" >
+                                    <a href="#/registry" id="functions_list_link">Functions</a>
+                                </li>
+                                <li ng-class="{active: isActive('/about')}">
+                                    <a href="#/about">About</a>
+                                </li>
+                                <!-- Only show when you connect to a XMPP server -->
+                                <li ng-show="xmpp.connection.connected" ng-class="{active: isActive('/profile')}">
+                                    <a href="#/profile">Profile</a>
+                                </li>
+
+                            </ul>
+
+                            <!-- Right -->
+
+                            <ul class="nav navbar-nav navbar-right bdr" ng-hide="xmpp.connection.connected">
+                                <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                                <li><a href="#" data-toggle="modal" data-target="#at-login">
+                                    <span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
+                            </ul>
+
+                            <ul class="nav navbar-nav navbar-right bdr" ng-show="xmpp.connection.connected">
+                                <li><a href="#" class="user">{{user.jid}}</a></li>
+                                <li>
+                                    <a href="#"  ng-click="disconnect()">
+                                        <span class="glyphicon glyphicon-log-out"></span>
+                                        Sign out
+                                    </a>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                </nav>
+            </header>
+            <section class="at-login-form">
+                <div log class="modal fade" id="at-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"></div>
+            </section>
+        </div>
+    </div>
+</div>

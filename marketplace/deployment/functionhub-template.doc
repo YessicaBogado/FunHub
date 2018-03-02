@@ -1,0 +1,12 @@
+oc -n zhaw-test1 process -f functionhub-template.yaml | oc -n zhaw-test1 create -f -
+
+# + login to start nginx -> get correct container instance id first (should use while loop)
+instance=`oc get pods | grep snafu-control | grep -v deploy | awk '{print $1}'`
+oc rsh $instance bash -c "nginx && (/opt/generator/mon.sh &)"
+
+# Image update:
+# oc import-image snafu-control
+
+# Removal:
+# oc delete all --all
+# oc delete configmaps --all
