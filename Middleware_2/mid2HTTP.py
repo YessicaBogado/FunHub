@@ -3,7 +3,7 @@
 
 from flask import Flask
 from flask import jsonify
-import mid2XMPP0 as xmpp
+import mid2XMPP as xmpp
 
 app = Flask(__name__)
 
