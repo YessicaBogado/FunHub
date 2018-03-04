@@ -16,7 +16,8 @@ global response
 
 
 class BaseXMPPBot:
-    def __init__(self, botname, jid, password, target, to_jid, text, debug=True):
+    def __init__(self, botname, jid, password,
+                 target, to_jid, text, debug=True):
         self.initinternal(botname, jid, password, target)
         self.readystep = 0
         self.debug = debug
@@ -115,9 +116,9 @@ class BaseXMPPBot:
         return self.get_msg()
 
     def send_message(self, to_jid, text):
-        id_ = self.client.send(nbxmpp.protocol.Message(to_jid, text, typ='chat'))
+        id_ = self.client.send(nbxmpp.protocol.Message(to_jid,
+                                                       text, typ='chat'))
         print('sent message with id ' + id_)
-
 
 
 class Connector(BaseXMPPBot):
@@ -136,9 +137,9 @@ class Connector(BaseXMPPBot):
             print(":: (xmpp connector) message received...", msg)
             print("--------sender: ", sender)
             print("--------msg: ", msg)
-            gobject.timeout_add(10, self.ml.quit)
-            # self.client.send(nbxmpp.protocol.Message(sender, response, typ="chat"))
-            self.msg = msg
+        gobject.timeout_add(10, self.ml.quit)
+    # self.client.send(nbxmpp.protocol.Message(sender, response, typ="chat"))
+        self.msg = msg
 
     def get_msg(self):
         return self.msg

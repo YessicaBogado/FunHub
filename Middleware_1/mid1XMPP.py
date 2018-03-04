@@ -110,12 +110,13 @@ class BaseXMPPBot:
         self.client.send(nbxmpp.protocol.Message(self.target, msg,
                                                  "groupchat"))
 
+
 class Connector(BaseXMPPBot):
-    def __init__(self, connectconfig, debug):
+    def __init__(self, connectconfig, port, debug):
         u = urllib.parse.urlparse(connectconfig)
         password = u.password
         jid = u.username + "@" + u.hostname
-
+        self.port = port
         target = None
         botname = None
         BaseXMPPBot.__init__(self, botname, jid, password, target, debug=debug)
@@ -127,12 +128,28 @@ class Connector(BaseXMPPBot):
 
         if (msg == "listFun"):
             response = urllib.request.urlopen(
-                "http://0.0.0.0:10000/functions/funHub").read()
+                "http://0.0.0.0:{}/functions/funHub".format(self.port)).read()
 
         else:
-            fun = "http://0.0.0.0:10000/function-download/{}.zip".format(msg)
+            msg = msg.split(" ")
+            if msg[0] == "download":
+                fun = "http://0.0.0.0:{}/function-download/{}.zip".format(
+                    self.port, msg[1])
             # response = zipfile.ZipFile(io.BytesIO(fun.content))
-            response = requests.get(fun, stream=True)
+                response = urllib.request.urlopen(fun).read()
+            if msg[0] == "test":
+                if len[msg] == 3:
+                    args = msg[2]
+                    function_test = msg[1]
+                    fun = "http://0.0.0.0:{}/invoke/{}/{}".format(
+                        self.port, args, function_test)
+                elif len[msg] == 2:
+                    function_test = msg[1]
+                    fun = "http://0.0.0.0:{}/invoke/{}/".format(
+                        self.port, function_test)
+                else:
+                    fun = "http://0.0.0.0:{}/invoke/".format(self.port)
+                response = urllib.request.urlopen(fun).read()
 
         self.client.send(nbxmpp.protocol.Message(sender, response, typ="chat"))
 
@@ -150,10 +167,11 @@ def initinternal(function, configpath):
         config.read(configpath)
         if function in config and "connector.xmpp" in config[function]:
             connectconfig = config[function]["connector.xmpp"]
+            port = config[function]["port"]
 
     if debug:
         print(":: (xmpp url)", connectconfig)
-        connector = Connector(connectconfig, debug)
+        connector = Connector(connectconfig, port, debug)
 
     if connectconfig:
         connector.worksafely()

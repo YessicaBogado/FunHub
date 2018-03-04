@@ -22,19 +22,19 @@ services:
     depends_on:
       - ejabberd
     network_mode: "host"
-    command: /bin/sh -c "sleep 10 && python3 /home/mid1XMPP.py"
+    command: /bin/sh -c "sleep 20 && python3 /home/mid1XMPP.py"
     restart: "always"
   mid2:
     image: mid2
     network_mode: "host"
     depends_on:
       - ejabberd
-    command: /bin/sh -c "sleep 10 && python3 /home/mid2HTTP.py"
+    command: /bin/sh -c "sleep 20 && python3 /home/mid2HTTP.py"
     restart: "always"
   snafu-control:
     image: snafu_dev
     ports:
-      - "10000:10000"
+      - "8080:8080"
     depends_on:
       - ejabberd
     restart: always
