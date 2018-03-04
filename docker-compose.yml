@@ -1,0 +1,50 @@
+version: "3.0"
+
+services:
+  ejabberd:
+    image: rroemhild/ejabberd
+    ports:
+      - "5222:5222"
+      - "5269:5269"
+      - "5280:5280"
+    volumes:
+      - ssl_ejabberd:/opt/ejabberd/ssl
+    hostname: "xmpp.localhost"
+    environment:
+      - "XMPP_DOMAIN=localhost"
+      - "ERLANG_NODE=ejabberd"
+      - "EJABBERD_ADMINS=admin@localhost"
+      - "EJABBERD_USERS=admin@localhost:1234 midFH@localhost:7777 midSnafu@localhost:7777"
+      - "TZ=Europe/Zurich"
+    restart: always
+  mid1:
+    image: mid1
+    depends_on:
+      - ejabberd
+    network_mode: "host"
+    command: /bin/sh -c "sleep 10 && python3 /home/mid1XMPP.py"
+    restart: "always"
+  mid2:
+    image: mid2
+    network_mode: "host"
+    depends_on:
+      - ejabberd
+    command: /bin/sh -c "sleep 10 && python3 /home/mid2HTTP.py"
+    restart: "always"
+  snafu-control:
+    image: snafu_dev
+    ports:
+      - "10000:10000"
+    depends_on:
+      - ejabberd
+    restart: always
+  function-hub:
+    image: functionhub
+    ports:
+      - "10080:10080"
+    depends_on:
+      - mid1
+      - mid2
+      - ejabberd
+volumes:
+    ssl_ejabberd:
