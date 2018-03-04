@@ -45,6 +45,6 @@ services:
     depends_on:
       - mid1
       - mid2
-      - ejabberd
+      - snafu-control
 volumes:
     ssl_ejabberd:

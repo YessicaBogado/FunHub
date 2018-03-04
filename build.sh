@@ -10,5 +10,7 @@ cd $local_directory/Middleware_1
 docker build --rm -t $mid1 .
 cd $local_directory/Middleware_2
 docker build --rm -t $mid2 .
-cd $local_directory/snafu_alpine
+cd $local_directory
+git clone https://github.com/YessicaBogado/snafu
+cd $local_directory/snafu
 docker build --rm -t $snafu .

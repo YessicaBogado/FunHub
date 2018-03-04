@@ -1,2 +1,0 @@
-pyesprima==1.0.0
-flask==0.12.2
