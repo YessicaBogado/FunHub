@@ -158,5 +158,6 @@ def init(jid_params, text):
     jid = jid_params['jid']
     password = jid_params['password']
     to_jid = jid_params['to_jid']
+    print(text)
     a = initinternal(jid=jid, to_jid=to_jid, password=password, text=text)
     return a

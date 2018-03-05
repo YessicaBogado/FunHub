@@ -150,12 +150,7 @@ var FunctionModalInstanceCtrl = function ($scope, $http, $modalInstance, sensor,
     $scope.accept_sla = false;
     console.log('http://0.0.0.0:8080/function-download/'+sensor.title+'.zip')
     $scope.pull = function () {
-        $http.get('http://0.0.0.0:8080/function-download/'+sensor.title+'.zip').then(function(response) {
-            var strFileName = sensor.title +'.zip';
-            var strMimeType = 'application/zip';
-            download(response.data, strFileName, strMimeType);
-    })
-
+      window.open('http://0.0.0.0:8080/function-download/'+sensor.title+'.zip',"_self")
     };
 
     $scope.unsubscribe = function () {

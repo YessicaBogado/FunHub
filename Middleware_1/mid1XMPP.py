@@ -9,6 +9,7 @@ import urllib.parse
 import urllib.request
 import requests
 import zipfile
+from tqdm import tqdm
 from gi.repository import GObject as gobject
 
 
@@ -136,21 +137,29 @@ class Connector(BaseXMPPBot):
                 fun = "http://0.0.0.0:{}/function-download/{}.zip".format(
                     self.port, msg[1])
             # response = zipfile.ZipFile(io.BytesIO(fun.content))
-                response = urllib.request.urlopen(fun).read()
+                response = requests.get(fun)
+#                result = bytes(0)
+#                for data in tqdm(response.iter_content()):
+#                    result += data
+#                response = result
             if msg[0] == "test":
-                if len[msg] == 3:
+                if len(msg) == 3:
                     args = msg[2]
                     function_test = msg[1]
                     fun = "http://0.0.0.0:{}/invoke/{}/{}".format(
-                        self.port, args, function_test)
-                elif len[msg] == 2:
+                        self.port, function_test, args)
+                elif len(msg) == 2:
                     function_test = msg[1]
                     fun = "http://0.0.0.0:{}/invoke/{}/".format(
                         self.port, function_test)
                 else:
                     fun = "http://0.0.0.0:{}/invoke/".format(self.port)
                 response = urllib.request.urlopen(fun).read()
-
+            if msg[0] == "list":
+                function_list = msg[1]
+                fun = "http://0.0.0.0:{}\
+/functions/funHub/{}".format(self.port, function_list)
+                response = urllib.request.urlopen(fun).read()
         self.client.send(nbxmpp.protocol.Message(sender, response, typ="chat"))
 
 

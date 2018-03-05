@@ -54,5 +54,15 @@ def test_args(function, args):
     return (msg.encode('utf-8').decode())
 
 
+@app.route('/list/<function>', methods=['GET'])
+def list_functions(function):
+    """Request from FunctionHub."""
+    text = "list " + str(function)
+    con = xmpp.init(jidparams, text)
+    msg = con.worksafely()
+    # msg = xmpp.Connector.get_msg()
+    return (msg.encode('utf-8').decode())
+
+
 if __name__ == '__main__':
     app.run(host='localhost', port=5006)

@@ -11,7 +11,7 @@ RUN apk update && apk add glib && apk add gobject-introspection-dev \
     && apk add pkgconfig && apk add cairo-dev && apk add gcc \
     && apk add python3-dev && apk add openssl-dev && apk add g++ \
     && apk add py-openssl
-RUN pip3 install nbxmpp requests pygobject
+RUN pip3 install nbxmpp requests pygobject tqdm
 COPY . /home/
 
 RUN chmod 0775 -R /home/
