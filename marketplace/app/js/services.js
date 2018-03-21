@@ -11,33 +11,20 @@ funhub_services.factory("Sensor", ["$resource", function ($resource) {
 funhub_services.factory("Registry", ["$http", "$q", "User",
 function ($http, $q, User) {
     var show_off;
-/*    $http.get("http://localhost:5006/listFun").then(function(response) {
-        show_off = response.data;
-        var show_json = show_off.substring(2, show_off.length - 1);
-        console.log("Entro");
-        console.log(show_json);
-    });*/
     var registry = {
         load: function () {
-            console.log("Salteo");
             show_off = sessionStorage.getItem("functions");
             var show_json = show_off.substring(2, show_off.length - 1);
             var requests = [];
             var p = JSON.parse(show_json);
-/*            for (var i = 0; i < all_registries.length; i++) {
-                requests.push($http.get(all_registries[i]));
-            }*/
-            console.log(p)
             requests.push(p);
             var q = $q.all(requests);
             var flat_list = q.then(function (result) {
                 var list = [];
                 for (var key in result) {
                     if (result.hasOwnProperty(key)) {
-                        console.log(key + " -> " + result[key]);
                         list = list.concat(result[key]);
                     }
-                    console.log(key)
                 }
 
                 return list;
@@ -47,32 +34,6 @@ function ($http, $q, User) {
     }
     return registry;
 }]);
-
-/*funhub_services.factory("Registry", ["$http", "$q", "User", "$scope", "$cacheFactory" function ($http, $q, User, $scope, $cacheFactory) {
-    var registry = {
-        load: function () {
-            var requests = [];
-            var all_registries = [];
-            cache = $cacheFactory('myCache');
-            var data = cache.get('functions');
-            all_registries = concat(data);
-            console.log(all_registries);
-            for (var i = 0; i < all_registries.length; i++) {
-                requests.push($http.get(all_registries[i]));
-            }
-            var q = $q.all(requests);
-            var flat_list = q.then(function (result) {
-                var list = [];
-                for (var i = 0; i < result.length; i++) {
-                    list = list.concat(result[i].data);
-                }
-                return list;
-            });
-            return flat_list;
-        }
-    }
-    return registry;
-}]);*/
 
 funhub_services.factory("Graph", function () {
     var graph = {
@@ -84,7 +45,6 @@ funhub_services.factory("Graph", function () {
             if (node_id in graph.charts) {
                 var shift = (graph.charts[node_id].series[0].data.length > 10);
                 graph.charts[node_id].series[0].addPoint(json_obj, true, shift);
-               // console.log("Chart updated:", node_id, json_obj);
             }
             return true;
         }
