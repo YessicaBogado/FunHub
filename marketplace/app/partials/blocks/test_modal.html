@@ -1,0 +1,21 @@
+<div class="modal-header">
+    <h1>Test</h1>
+    <h3 class="profile-title">{{sensor.title}}</h3>
+</div>
+<div class="modal-body">
+    <form name="myForm">
+        <p>Type of arguments: {{arg}}</p>
+        <label>Insert arguments separated by commas:
+            <input type="text" id="dataInput" name="data" ng-model="data" class="form-control w3-input w3-border w3-animate-input" type="text" style="width:30%" required>
+        <div role="alert">
+            <span class="error" ng-show="myForm.data.$error.required">
+                Complete textbox
+            </span>
+        </div>
+        <p>Response: {{response}}</p>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-default" ng-click="send()">Send</button>
+    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+</div>

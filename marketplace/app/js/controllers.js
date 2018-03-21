@@ -24,19 +24,6 @@ funhub_controllers.controller("RegistryCtrl", ["$scope", "$http", "Registry", "U
     });
 }]);
 
-/*funhub_controllers.controller("RegistryCtrl", ["$scope", "Registry", "User",
-    function ($scope, Registry, User) {
-        Registry.load().then(function (sensors) {
-            $scope.sensors = sensors;
-        });
-        $scope.user = User;
-        $scope.$watch('user.registries', function (a, b) {
-            Registry.load().then(function (sensors) {
-                $scope.sensors = sensors;
-            });
-        })
-    }]);
-*/
 funhub_controllers.controller("StreamCtrl", ["$scope", "Registry", "User", "XMPP",
     function ($scope, Registry, User, XMPP) {
         $scope.sensors = [];
@@ -136,6 +123,7 @@ function FunctionModalCtrl($scope, $modal) {
                 }
             }
         });
+
         modalInstance.result.then(function () {
             }//, function () {
             //  console.log("Modal closed");
@@ -144,20 +132,63 @@ function FunctionModalCtrl($scope, $modal) {
     };
 };
 
-var FunctionModalInstanceCtrl = function ($scope, $http, $modalInstance, sensor, User) {
+var FunctionModalInstanceCtrl = function ($scope, $http, $modalInstance, $modal, sensor, User) {
     $scope.user = User;
     $scope.sensor = sensor;
     $scope.accept_sla = false;
     console.log('http://0.0.0.0:8080/function-download/'+sensor.title+'.zip')
+
+    $scope.pull = function () {
+      window.open('http://0.0.0.0:8080/function-download/'+sensor.title+'.zip',"_self")
+    };
+    $scope.test = function () {
+        console.log("Nombre de la funcion:")
+        console.log(sensor.funcname)
+        var modalInstance = $modal.open({
+            templateUrl: "partials/blocks/test_modal.html",
+            controller: TestModalInstanceCtrl,
+            resolve: {
+                sensor: function () {
+                    return $scope.sensor;
+                }
+            }
+        });
+    };
+    $scope.cancel = function () {
+        $modalInstance.dismiss("cancel");
+    };
+};
+
+//Modal for functions test
+var TestModalInstanceCtrl = function ($scope, $http, $modal, $modalInstance, sensor, User) {
+    $scope.user = User;
+    $scope.sensor = sensor;
+    $scope.data = "";
+
+    var request = $http.get("http://localhost:5006/test/"+sensor.funcname).then(function(response) {
+         var str = eval(response.data.substring(2, response.data.length - 1));
+         $scope.arg = str;
+         return str;
+    });
+
     $scope.pull = function () {
       window.open('http://0.0.0.0:8080/function-download/'+sensor.title+'.zip',"_self")
     };
 
-    $scope.unsubscribe = function () {
-        User.unsubscribe($scope.sensor, function () {
-            console.log("user unsubscribed from sensor: " + $scope.sensor.id);
+    $scope.send = function () {
+        request.then(function (arg) {
+            var dataInput = document.getElementById("dataInput").value;
+            var obj = new Object();
+            var array = dataInput.split(",");
+            for (var i = 0; i < arg.length; i++) {
+                obj[arg[i]] = array[i];
+            }
+            var jsonString= JSON.stringify(obj);
+            $http.get("http://0.0.0.0:8080/invoke/"+sensor.funcname+"/"+jsonString).then(function(response) {
+                 $scope.response = response.data;
+            });
+
         });
-        $modalInstance.close();
     };
 
     $scope.cancel = function () {
@@ -165,7 +196,7 @@ var FunctionModalInstanceCtrl = function ($scope, $http, $modalInstance, sensor,
     };
 };
 
-//Modal for the Registry view in Settings Tab
+//Modal for the registry view in Settings Tab
 function RegistryModalCtrl($scope, $modal, $http, User) {
     $scope.open = function () {
         var modalInstance = $modal.open({
@@ -189,7 +220,7 @@ var RegistryModalInstanceCtrl = function ($scope, $modalInstance, $http, registr
     };
 };
 
-//Modal for Log In with another XMPP server
+//Modal for log in with another XMPP server
 function LogInModalCtrl($scope, $modal) {
     $scope.open = function () {
         var modalInstance = $modal.open({
